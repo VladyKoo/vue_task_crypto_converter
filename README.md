@@ -28,6 +28,6 @@ npm run lint
 <div align ="center">
   <img src = "Task.jpg" 
       alt = "ТЗ" 
-      width="60%"     
+      width="80%"     
   />
 </div>
