@@ -1,7 +1,7 @@
 <template>
   <v-app app>
     <v-app-bar dense color="blue" app>
-      <v-toolbar-title class="white--text">Конвертер криптовалют </v-toolbar-title>
+      <v-toolbar-title class="white--text">Конвертер криптовалют</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -37,6 +37,5 @@
 export default {
   name: 'App',
   data: () => ({}),
-  mounted() {},
 }
 </script>
