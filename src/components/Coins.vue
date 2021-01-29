@@ -9,7 +9,7 @@
           <th class="text-left">
             Name
           </th>
-          <th class="text-left">
+          <th class="text-left price">
             Price
           </th>
           <th class="text-left">
@@ -40,4 +40,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.price {
+  width: 400px;
+}
+</style>

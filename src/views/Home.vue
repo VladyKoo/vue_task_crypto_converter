@@ -1,7 +1,6 @@
 <template>
   <div class="home">
     <div class="text-center"><h1>Конвертер криптовалют</h1></div>
-
     <div>
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
@@ -31,11 +30,12 @@ export default {
   name: 'Home',
   data: () => ({
     coinsData: [
-      { name: 'Bitcoin', id: 'BTC', price: 10 },
-      { name: 'Ethereum', id: 'ETH', price: 20 },
-      { name: 'US Dollar', id: 'USD', price: 30 },
+      { name: 'Bitcoin', id: 'BTC', price: 10, graphData: [] },
+      { name: 'Ethereum', id: 'ETH', price: 20, graphData: [] },
+      { name: 'US Dollar', id: 'USD', price: 30, graphData: [] },
     ],
     selectedCoin: 0,
+    getPriceData: {},
     graphData: {
       labels: [
         '26.01',
@@ -57,23 +57,47 @@ export default {
     },
   }),
   methods: {
-    ping: async () => {
-      return await coinGeckoApi.ping()
-    },
     exchangeRates: async () => {
       return await coinGeckoApi.exchangeRates()
     },
-    simple: async () => {
-      return await coinGeckoApi.simple.price({
-        ids: ['bitcoin', 'ethereum'],
-        vs_currencies: ['eth', 'usd', 'btc'],
+
+    getSimplePrice() {
+      return coinGeckoApi.simple
+        .price({
+          ids: ['bitcoin', 'ethereum'],
+          vs_currencies: ['eth', 'usd', 'btc'],
+        })
+        .then((data) => {
+          const price = data.data
+          price['us dollar'] = {
+            eth: +(1 / price.ethereum.usd).toFixed(8),
+            btc: +(1 / price.bitcoin.usd).toFixed(8),
+            usd: 1,
+          }
+          return price
+        })
+    },
+    computedPrice() {
+      // console.log(this.getPriceData)
+
+      const price = this.getPriceData[this.coinsData[this.selectedCoin].name.toLowerCase()]
+      console.log(price)
+      this.coinsData.forEach((elem) => {
+        elem.price = price[elem.id.toLowerCase()]
       })
     },
   },
   mounted() {
-    this.simple().then((data) => {
-      console.log(data)
+    this.getSimplePrice().then((data) => {
+      this.getPriceData = data
+      this.computedPrice()
     })
+  },
+  watch: {
+    selectedCoin() {
+      console.log('asfdasdf')
+      this.computedPrice()
+    },
   },
 }
 </script>
