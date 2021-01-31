@@ -36,6 +36,8 @@
 <script>
 export default {
   name: 'App',
-  data: () => ({}),
+  data: () => ({
+    value: '/',
+  }),
 }
 </script>

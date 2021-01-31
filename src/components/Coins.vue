@@ -12,9 +12,6 @@
           <th class="text-left price">
             Price
           </th>
-          <th class="text-left">
-            Graph last 14 Days
-          </th>
         </tr>
       </thead>
       <tbody>
@@ -22,7 +19,6 @@
           <td>{{ coin.id }}</td>
           <td>{{ coin.name }}</td>
           <td>{{ coin.price }}</td>
-          <td><Graph :graphData="graphData" /></td>
         </tr>
       </tbody>
     </template>
@@ -30,13 +26,11 @@
 </template>
 
 <script>
-import Graph from '../components/Graph'
 export default {
   props: {
     coinsData: Array,
     graphData: Object,
   },
-  components: { Graph },
 }
 </script>
 
