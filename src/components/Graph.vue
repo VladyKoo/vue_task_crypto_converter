@@ -1,8 +1,8 @@
 <template>
-  <v-card class="my-2" max-width="600">
+  <v-card class=" mx-auto" max-width="800" elevation="5">
     <v-sparkline
-      :labels="graphData.labels"
-      :value="graphData.value"
+      :labels="coinsHistory.labels"
+      :value="coinsHistory.prices"
       color="green"
       line-width="2"
       padding="16"
@@ -14,7 +14,7 @@
 <script>
 export default {
   props: {
-    graphData: Object,
+    coinsHistory: Object,
   },
 }
 </script>

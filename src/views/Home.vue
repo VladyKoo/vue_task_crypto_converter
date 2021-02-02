@@ -1,107 +1,68 @@
 <template>
   <div class="home">
     <div class="text-center"><h1>Конвертер криптовалют</h1></div>
-
-    <v-container style="width: 60%">
-      <v-row no-gutters>
-        <v-col>
-          <CoinMenu></CoinMenu>
-        </v-col>
-        <v-col md="auto" align-self="center">
-          <v-btn>
-            <v-icon icon color="primary">mdi-swap-horizontal-bold</v-icon>
-          </v-btn>
-        </v-col>
-        <v-col>
-          <CoinMenu></CoinMenu>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-container class="spacing-playground px-auto">
-      <Graph :graphData="graphData"></Graph>
-    </v-container>
+    <v-row>
+      <v-col align-self="center">
+        <CoinCard></CoinCard>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <Graph :coinsHistory="coinsHistory"></Graph>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
-import CoinMenu from '../components/CoinMenu.vue'
+import CoinCard from '../components/CoinCard'
 import Graph from '../components/Graph.vue'
-import coinGeckoApi from '../services/coinGeckoApi'
+import CoinGeckoApi from '../services/coinGeckoApi'
+import { mapState } from 'vuex'
 export default {
-  components: { CoinMenu, Graph },
+  components: { CoinCard, Graph },
   name: 'Home',
-  data: () => ({
-    coinsData: [
-      { name: 'Bitcoin', id: 'BTC', price: null },
-      { name: 'Ethereum', id: 'ETH', price: null },
-      { name: 'US Dollar', id: 'USD', price: null },
-    ],
-    selectedCoin: 0,
-    getPriceData: {},
-    graphData: {
-      labels: [
-        '26.01',
-        '27.01',
-        '28.01',
-        '29.01',
-        '30.01',
-        '26.01',
-        '27.01',
-        '28.01',
-        '29.01',
-        '30.01',
-        '26.01',
-        '27.01',
-        '28.01',
-        '29.01',
-      ],
-      value: [10, 200, 100, 400, 5, 10, 200, 100, 400, 5, 10, 200, 100, 400],
-    },
-  }),
-  methods: {
-    exchangeRates: async () => {
-      return await coinGeckoApi.exchangeRates()
-    },
-
-    getSimplePrice() {
-      return coinGeckoApi.simple
-        .price({
-          ids: ['bitcoin', 'ethereum'],
-          vs_currencies: ['btc', 'eth', 'usd', 'rub'],
-        })
-        .then((data) => {
-          const price = data.data
-          console.log(price)
-
-          price['us dollar'] = {
-            eth: +(1 / price.ethereum.usd).toFixed(8),
-            btc: +(1 / price.bitcoin.usd).toFixed(8),
-            usd: 1,
-          }
-          return price
-        })
-    },
-    computedPrice() {
-      // console.log(this.getPriceData)
-
-      const price = this.getPriceData[this.coinsData[this.selectedCoin].name.toLowerCase()]
-      // console.log(price)
-      this.coinsData.forEach((elem) => {
-        elem.price = price[elem.id.toLowerCase()]
-      })
-    },
+  data: () => ({}),
+  computed: {
+    ...mapState({
+      coinsHistory: (state) => state.converter.coinsHistory,
+      currentCoin: (state) => state.converter.currentCoin,
+    }),
   },
+  methods: {},
   mounted() {
-    this.getSimplePrice().then((data) => {
-      this.getPriceData = data
-      this.computedPrice()
+    CoinGeckoApi.getSimplePrice().then((data) => {
+      this.$store.dispatch('changeCoinsPrice', data)
     })
-  },
-  watch: {
-    selectedCoin() {
-      console.log('asfdasdf')
-      this.computedPrice()
-    },
+    console.log(CoinGeckoApi.getHistoryPrice())
+
+    // const promise = new Promise((resolve, reject) => {
+    //   const data = CoinGeckoApi.getHistoryPrice()
+    //   if (data) resolve(data)
+    //   else reject('data undefind')
+    // })
+
+    // promise
+    //   .then((data) => {
+    //     console.log(data)
+    //     const copyData = data.slice()
+    //     // const coinsHistory = {
+    //     //   labels: [],
+    //     //   prices: [],
+    //     // }
+    //     // copyData.forEach((elem) => {
+    //     //   coinsHistory.labels.push(elem.labelData)
+    //     //   coinsHistory.prices.push(1)
+    //     //   console.log(elem)
+    //     // })
+
+    //     console.log(copyData.price)
+
+    //     // this.$store.dispatch('changeCoinsHistory' )
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
   },
 }
 </script>
