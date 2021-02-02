@@ -45,27 +45,23 @@ export default {
   },
   getHistoryPrice() {   
     const dateArray = getDateArray()
+    // let result = []
+    // Promise.all((resolve, reject)=>{
+    // })
 
-
-    Promise.all((resolve, reject)=>{
-    })
-
-    Promise.all()
-
-
-
-    dateArray.map((elem) => {
+    const promiseArray = dateArray.map((elem) => {
       return CG.coins
         .fetchHistory(coinId[0], { date: elem.fullDate, localization: false })
-        .then((data) => {
-          dateArray.forEach((el)=>{
-             if (el.fullDate === elem.fullDate ) return elem.price = data.data.market_data.current_price.[coinSymbol[2]]
+        .then((data) => {          
+             elem.price = data.data.market_data.current_price.[coinSymbol[2]]
+             return elem
           })
-          return dateArray
         })
-    })
+    
+      return Promise.all(promiseArray).then((data)=>{
+        return data
+      })
 
-    // return dateArray
-
+      
   },
 }

@@ -34,35 +34,21 @@ export default {
     CoinGeckoApi.getSimplePrice().then((data) => {
       this.$store.dispatch('changeCoinsPrice', data)
     })
-    console.log(CoinGeckoApi.getHistoryPrice())
 
-    // const promise = new Promise((resolve, reject) => {
-    //   const data = CoinGeckoApi.getHistoryPrice()
-    //   if (data) resolve(data)
-    //   else reject('data undefind')
-    // })
+    CoinGeckoApi.getHistoryPrice().then((data) => {
+      const copyData = data.slice()
+      const coinsHistory = {
+        labels: [],
+        prices: [],
+      }
+      copyData.forEach((elem) => {
+        coinsHistory.labels.push(elem.labelData)
+        coinsHistory.prices.push(elem.price)
+      })
 
-    // promise
-    //   .then((data) => {
-    //     console.log(data)
-    //     const copyData = data.slice()
-    //     // const coinsHistory = {
-    //     //   labels: [],
-    //     //   prices: [],
-    //     // }
-    //     // copyData.forEach((elem) => {
-    //     //   coinsHistory.labels.push(elem.labelData)
-    //     //   coinsHistory.prices.push(1)
-    //     //   console.log(elem)
-    //     // })
-
-    //     console.log(copyData.price)
-
-    //     // this.$store.dispatch('changeCoinsHistory' )
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //   })
+      console.log(coinsHistory)
+      this.$store.dispatch('changeCoinsHistory', coinsHistory)
+    })
   },
 }
 </script>
