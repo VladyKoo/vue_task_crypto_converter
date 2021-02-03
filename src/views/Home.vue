@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="text-center"><h1>Конвертер криптовалют</h1></div>
+    <div class="text-center mb-8"><h1>Конвертер криптовалют</h1></div>
     <v-row>
       <v-col align-self="center">
         <CoinCard></CoinCard>
@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import CoinCard from '../components/CoinCard'
 import { mapState } from 'vuex'
-import LineChart from '../components/LineChart.vue'
+import CoinCard from '../components/converter/CoinCard'
+import LineChart from '../components/converter/LineChart'
 export default {
   components: { CoinCard, LineChart },
   name: 'Home',

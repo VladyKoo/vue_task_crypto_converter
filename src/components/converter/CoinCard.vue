@@ -52,7 +52,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import CoinMenu from './CoinMenu.vue'
+import CoinMenu from '../converter/CoinMenu'
 export default {
   components: { CoinMenu },
   data: () => ({

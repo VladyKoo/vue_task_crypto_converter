@@ -5,8 +5,6 @@ const coinSymbol = ['bitcoin', 'ethereum', 'us dollar']
 const coinId = ['btc', 'eth', 'usd']
 
 function processing(array = [], func) {
-  console.log(array)
-
   const coinsHistory = {
     labels: [],
     prices: [],
