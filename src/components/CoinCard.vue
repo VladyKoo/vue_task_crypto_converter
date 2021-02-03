@@ -6,6 +6,7 @@
           <v-col>
             <CoinMenu
               name="inputSelectedCoin"
+              name2="inputSelected"
               :selectedCoin="coinsInputOutputValue.inputSelectedCoin"
             ></CoinMenu>
           </v-col>
@@ -38,6 +39,7 @@
           <v-col>
             <CoinMenu
               name="outputSelectedCoin"
+              name2="outputSelected"
               :selectedCoin="coinsInputOutputValue.outputSelectedCoin"
             ></CoinMenu>
           </v-col>

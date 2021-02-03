@@ -1,14 +1,39 @@
+import CoinGeckoApi from '../../services/coinGeckoApi'
+
 export default {
   state: {
     coinsData: [
-      { name: 'Bitcoin', id: 'BTC', icon: 'mdi-currency-btc' },
-      { name: 'Ethereum', id: 'ETH', icon: 'mdi-ethereum' },
-      { name: 'US Dollar', id: 'USD', icon: 'mdi-currency-usd' },
+      { name: 'Bitcoin', id: 'btc', symbol: 'bitcoin', icon: 'mdi-currency-btc' },
+      { name: 'Ethereum', id: 'eth', symbol: 'ethereum', icon: 'mdi-ethereum' },
+      { name: 'US Dollar', id: 'usd', symbol: 'us dollar', icon: 'mdi-currency-usd' },
     ],
     coinsInputOutputValue: {
+      inputSelected: {
+        num: 0,
+        id: 'btc',
+        symbol: 'bitcoin',
+      },
+      outputSelected: {
+        num: 1,
+        id: 'eth',
+        symbol: 'ethereum',
+      },
       inputSelectedCoin: 0,
-      outputSelectedCoin: 1,
+      outputSelectedCoin: 0,
       inputAmount: 1,
+    },
+    coinsUserValue: {
+      inputAmount: 1,
+      inputSelected: {
+        num: 0,
+        id: 'btc',
+        symbol: 'bitcoin',
+      },
+      outputSelected: {
+        num: 1,
+        id: 'eth',
+        symbol: 'ethereum',
+      },
     },
     coinsPrice: {
       bitcoin: {
@@ -27,30 +52,18 @@ export default {
         usd: 1,
       },
     },
-    currentCoin: 'ethereum',
     coinsHistory: {
-      labels: [
-        '26.01',
-        '27.01',
-        '28.01',
-        '29.01',
-        '30.01',
-        '26.01',
-        '27.01',
-        '28.01',
-        '29.01',
-        '30.01',
-        '26.01',
-        '27.01',
-        '28.01',
-        '29.01',
-      ],
-      prices: [10, 200, 100, 400, 400, 5, 10, 5, 10, 200, 100, 200, 100, 400],
+      labels: null,
+      prices: null,
     },
   },
   getters: {},
   mutations: {
     updateSelectedCoin(state, payload) {
+      console.log(payload)
+      state.coinsUserValue[payload.name2].num = payload.selectedCoin
+      state.coinsUserValue[payload.name2].id = state.coinsData[payload.selectedCoin].id
+      state.coinsUserValue[payload.name2].symbol = state.coinsData[payload.selectedCoin].symbol
       state.coinsInputOutputValue[payload.name] = payload.selectedCoin
     },
     updateInputAmount(state, payload) {
@@ -75,11 +88,41 @@ export default {
     changeInputAmount({ commit }, payload) {
       commit('updateInputAmount', payload)
     },
-    changeCoinsPrice({ commit }, payload) {
-      commit('updateCoinsPrice', payload)
+    getSimplePrice({ commit }) {
+      CoinGeckoApi.getSimplePrice().then((data) => {
+        commit('updateCoinsPrice', data)
+      })
     },
-    changeCoinsHistory({ commit }, payload) {
-      commit('updateCoinsHistory', payload)
+    getHistoryPrice({ commit, state }) {
+      const id = state.coinsData[state.coinsInputOutputValue.inputSelectedCoin].name.toLowerCase()
+      const symbol = state.coinsData[
+        state.coinsInputOutputValue.outputSelectedCoin
+      ].id.toLowerCase()
+
+      CoinGeckoApi.getHistoryPrice(id, symbol).then((data) => {
+        const copyData = data.slice()
+        const coinsHistory = {
+          labels: [],
+          prices: [],
+        }
+        copyData.forEach((elem) => {
+          coinsHistory.labels.push(elem.labelData)
+          coinsHistory.prices.push(elem.price)
+        })
+
+        commit('updateCoinsHistory', coinsHistory)
+      })
+    },
+    getHistory({ commit, state }) {
+      const id = state.coinsData[state.coinsInputOutputValue.inputSelectedCoin].name.toLowerCase()
+      const symbol = state.coinsData[
+        state.coinsInputOutputValue.outputSelectedCoin
+      ].id.toLowerCase()
+
+      CoinGeckoApi.getHistory(id, symbol).then((data) => {
+        console.log(data)
+        commit('updateCoinsHistory', data)
+      })
     },
   },
 }

@@ -8,7 +8,9 @@
     </v-row>
     <v-row>
       <v-col>
-        <Graph :coinsHistory="coinsHistory"></Graph>
+        <v-card class="mx-auto" max-width="900" elevation="7">
+          <LineChart></LineChart>
+        </v-card>
       </v-col>
     </v-row>
   </div>
@@ -16,39 +18,22 @@
 
 <script>
 import CoinCard from '../components/CoinCard'
-import Graph from '../components/Graph.vue'
-import CoinGeckoApi from '../services/coinGeckoApi'
 import { mapState } from 'vuex'
+import LineChart from '../components/LineChart.vue'
 export default {
-  components: { CoinCard, Graph },
+  components: { CoinCard, LineChart },
   name: 'Home',
   data: () => ({}),
   computed: {
     ...mapState({
-      coinsHistory: (state) => state.converter.coinsHistory,
-      currentCoin: (state) => state.converter.currentCoin,
+      coinsData: (state) => state.converter.coinsData,
+      coinsInputOutputValue: (state) => state.converter.coinsInputOutputValue,
     }),
   },
-  methods: {},
   mounted() {
-    CoinGeckoApi.getSimplePrice().then((data) => {
-      this.$store.dispatch('changeCoinsPrice', data)
-    })
-
-    CoinGeckoApi.getHistoryPrice().then((data) => {
-      const copyData = data.slice()
-      const coinsHistory = {
-        labels: [],
-        prices: [],
-      }
-      copyData.forEach((elem) => {
-        coinsHistory.labels.push(elem.labelData)
-        coinsHistory.prices.push(elem.price)
-      })
-
-      console.log(coinsHistory)
-      this.$store.dispatch('changeCoinsHistory', coinsHistory)
-    })
+    this.$store.dispatch('getSimplePrice')
+    // this.$store.dispatch('getHistoryPrice')
+    this.$store.dispatch('getHistory')
   },
 }
 </script>
