@@ -7,22 +7,7 @@ export default {
       { name: 'Ethereum', id: 'eth', symbol: 'ethereum', icon: 'mdi-ethereum' },
       { name: 'US Dollar', id: 'usd', symbol: 'us dollar', icon: 'mdi-currency-usd' },
     ],
-    coinsInputOutputValue: {
-      inputSelected: {
-        num: 0,
-        id: 'btc',
-        symbol: 'bitcoin',
-      },
-      outputSelected: {
-        num: 1,
-        id: 'eth',
-        symbol: 'ethereum',
-      },
-      inputSelectedCoin: 0,
-      outputSelectedCoin: 0,
-      inputAmount: 1,
-    },
-    coinsUserValue: {
+    userValue: {
       inputAmount: 1,
       inputSelected: {
         num: 0,
@@ -30,26 +15,26 @@ export default {
         symbol: 'bitcoin',
       },
       outputSelected: {
-        num: 1,
-        id: 'eth',
-        symbol: 'ethereum',
+        num: 0,
+        id: 'btc',
+        symbol: 'bitcoin',
       },
     },
     coinsPrice: {
       bitcoin: {
-        btc: 1,
-        eth: 0,
-        usd: 0,
+        btc: null,
+        eth: null,
+        usd: null,
       },
       ethereum: {
-        btc: 0,
-        eth: 1,
-        usd: 0,
+        btc: null,
+        eth: null,
+        usd: null,
       },
       'us dollar': {
-        btc: 0,
-        eth: 0,
-        usd: 1,
+        btc: null,
+        eth: null,
+        usd: null,
       },
     },
     coinsHistory: {
@@ -57,22 +42,19 @@ export default {
       prices: null,
     },
   },
-  getters: {},
   mutations: {
     updateSelectedCoin(state, payload) {
-      console.log(payload)
-      state.coinsUserValue[payload.name2].num = payload.selectedCoin
-      state.coinsUserValue[payload.name2].id = state.coinsData[payload.selectedCoin].id
-      state.coinsUserValue[payload.name2].symbol = state.coinsData[payload.selectedCoin].symbol
-      state.coinsInputOutputValue[payload.name] = payload.selectedCoin
+      state.userValue[payload.name].num = payload.selectedCoin
+      state.userValue[payload.name].id = state.coinsData[payload.selectedCoin].id
+      state.userValue[payload.name].symbol = state.coinsData[payload.selectedCoin].symbol
     },
     updateInputAmount(state, payload) {
-      state.coinsInputOutputValue.inputAmount = payload
+      state.userValue.inputAmount = payload
     },
     reverseDirection(state) {
-      const coinsValue = state.coinsInputOutputValue.inputSelectedCoin
-      state.coinsInputOutputValue.inputSelectedCoin = state.coinsInputOutputValue.outputSelectedCoin
-      state.coinsInputOutputValue.outputSelectedCoin = coinsValue
+      const coinsValue = state.userValue.inputSelected
+      state.userValue.inputSelected = state.userValue.outputSelected
+      state.userValue.outputSelected = coinsValue
     },
     updateCoinsPrice(state, payload) {
       state.coinsPrice = payload
@@ -93,34 +75,11 @@ export default {
         commit('updateCoinsPrice', data)
       })
     },
-    getHistoryPrice({ commit, state }) {
-      const id = state.coinsData[state.coinsInputOutputValue.inputSelectedCoin].name.toLowerCase()
-      const symbol = state.coinsData[
-        state.coinsInputOutputValue.outputSelectedCoin
-      ].id.toLowerCase()
-
-      CoinGeckoApi.getHistoryPrice(id, symbol).then((data) => {
-        const copyData = data.slice()
-        const coinsHistory = {
-          labels: [],
-          prices: [],
-        }
-        copyData.forEach((elem) => {
-          coinsHistory.labels.push(elem.labelData)
-          coinsHistory.prices.push(elem.price)
-        })
-
-        commit('updateCoinsHistory', coinsHistory)
-      })
-    },
     getHistory({ commit, state }) {
-      const id = state.coinsData[state.coinsInputOutputValue.inputSelectedCoin].name.toLowerCase()
-      const symbol = state.coinsData[
-        state.coinsInputOutputValue.outputSelectedCoin
-      ].id.toLowerCase()
+      const symbol = state.userValue.inputSelected.symbol
+      const id = state.userValue.outputSelected.id
 
-      CoinGeckoApi.getHistory(id, symbol).then((data) => {
-        console.log(data)
+      CoinGeckoApi.getHistory(symbol, id).then((data) => {
         commit('updateCoinsHistory', data)
       })
     },

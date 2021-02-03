@@ -4,18 +4,14 @@
       <v-card class="ma-5 pa-5" min-width="200px" max-width="600px" elevation="5">
         <v-row>
           <v-col>
-            <CoinMenu
-              name="inputSelectedCoin"
-              name2="inputSelected"
-              :selectedCoin="coinsInputOutputValue.inputSelectedCoin"
-            ></CoinMenu>
+            <CoinMenu name="inputSelected"></CoinMenu>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
             <v-text-field
               type="number"
-              :value="coinsInputOutputValue.inputAmount"
+              :value="userValue.inputAmount"
               @input="changeInputAmount($event)"
               :rules="[rules.required, rules.negative]"
               label="Количество"
@@ -23,7 +19,7 @@
               clearable
             >
               <v-icon slot="prepend" color="primary">
-                {{ coinsData[coinsInputOutputValue.inputSelectedCoin].icon }}
+                {{ coinsData[userValue.inputSelected.num].icon }}
               </v-icon>
             </v-text-field>
           </v-col>
@@ -37,18 +33,14 @@
       <v-card class="ma-5 pa-5" min-width="200px" max-width="600px" elevation="5">
         <v-row>
           <v-col>
-            <CoinMenu
-              name="outputSelectedCoin"
-              name2="outputSelected"
-              :selectedCoin="coinsInputOutputValue.outputSelectedCoin"
-            ></CoinMenu>
+            <CoinMenu name="outputSelected"></CoinMenu>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
             <v-text-field readonly type="number" :value="outputAmount" label="Количество">
               <v-icon slot="prepend" color="primary">
-                {{ coinsData[coinsInputOutputValue.outputSelectedCoin].icon }}
+                {{ coinsData[userValue.outputSelected.num].icon }}
               </v-icon>
             </v-text-field>
           </v-col>
@@ -72,20 +64,14 @@ export default {
   computed: {
     ...mapState({
       coinsData: (state) => state.converter.coinsData,
-      coinsInputOutputValue: (state) => state.converter.coinsInputOutputValue,
       coinsPrice: (state) => state.converter.coinsPrice,
+      userValue: (state) => state.converter.userValue,
     }),
     outputAmount() {
-      const inputCoinName = this.coinsData[
-        this.coinsInputOutputValue.inputSelectedCoin
-      ].name.toLowerCase()
-      const outputCoinName = this.coinsData[
-        this.coinsInputOutputValue.outputSelectedCoin
-      ].id.toLowerCase()
-
-      if (this.coinsInputOutputValue.inputAmount >= 0) {
+      if (this.userValue.inputAmount > 0) {
         return (
-          this.coinsInputOutputValue.inputAmount * this.coinsPrice[inputCoinName][outputCoinName]
+          this.userValue.inputAmount *
+          this.coinsPrice[this.userValue.inputSelected.symbol][this.userValue.outputSelected.id]
         )
       } else return 0
     },

@@ -7,14 +7,11 @@ export default {
 
   data: () => ({
     gradient: null,
-    // coinsHistory: {
-    //   labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-    //   prices: [10, 200, 100, 400, 400, 5, 10, 5, 10, 200, 100, 200, 100, 400],
-    // },
   }),
   computed: {
     ...mapState({
       coinsHistory: (state) => state.converter.coinsHistory,
+      userValue: (state) => state.converter.userValue,
     }),
     chartData() {
       return {
@@ -43,7 +40,7 @@ export default {
         },
         title: {
           display: true,
-          text: `График криптовалюты ${1}-${1}`,
+          text: `График криптовалюты ${this.userValue.inputSelected.id.toUpperCase()}-${this.userValue.outputSelected.id.toUpperCase()}`,
         },
         scales: {
           xAxes: [

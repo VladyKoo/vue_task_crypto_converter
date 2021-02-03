@@ -27,12 +27,10 @@ export default {
   computed: {
     ...mapState({
       coinsData: (state) => state.converter.coinsData,
-      coinsInputOutputValue: (state) => state.converter.coinsInputOutputValue,
     }),
   },
   mounted() {
     this.$store.dispatch('getSimplePrice')
-    // this.$store.dispatch('getHistoryPrice')
     this.$store.dispatch('getHistory')
   },
 }
